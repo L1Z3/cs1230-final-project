@@ -8,8 +8,6 @@
 struct RenderShapeData {
     ScenePrimitive primitive;
     glm::mat4 ctm; // the cumulative transformation matrix
-    RenderShapeData(const ScenePrimitive& primitive, const glm::mat4& ctm)
-    : primitive(primitive), ctm(ctm) {}
 };
 
 // Struct which contains all the data needed to render a scene

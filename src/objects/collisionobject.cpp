@@ -39,7 +39,7 @@ std::optional<CollisionInfo> CollisionObject::getCollisionInfo(const glm::vec3& 
         }
         const auto& otherAABB = object->aabb();
         if (movedAABB.collides(otherAABB)) {
-            return CollisionInfo(movedAABB.getCollisionMoveVec(otherAABB), object);
+            return CollisionInfo{movedAABB.getCollisionMoveVec(otherAABB), object};
         }
     }
     return std::nullopt;

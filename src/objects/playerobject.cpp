@@ -90,7 +90,7 @@ void PlayerObject::tick(double elapsedSeconds) {
     if (m_keyMap[GLFW_KEY_E]) {
         m_keyMap[GLFW_KEY_E] = false;
         scene()->addObject(PrimitiveType::PRIMITIVE_CONE, glm::translate(glm::mat4(1.f), m_camera->pos() + 2.f * m_camera->look()),
-                           SceneMaterial(SceneColor(0.1f, 0.1f, 0.1f, 1.f), SceneColor(1.f, 1.f, 1.f, 1.f)),
+                           SceneMaterial{SceneColor{0.1f, 0.1f, 0.1f, 1.f}, SceneColor{1.f, 1.f, 1.f, 1.f}},
                            RealtimeObjectType::STATIC);
     }
     // example usage of removing object from scene
@@ -127,12 +127,12 @@ void PlayerObject::mousePressEvent(int button)
         glm::vec3 direction = m_camera->look();
 
         // Create the projectile's render shape data
-        ScenePrimitive projectilePrimitive(PrimitiveType::PRIMITIVE_CYLINDER,
-            SceneMaterial(SceneColor(0.1f, 0.1f, 0.1f, 1.f), SceneColor(1.f, 1.f, 1.f, 1.f)));
+        ScenePrimitive projectilePrimitive{PrimitiveType::PRIMITIVE_CYLINDER,
+            SceneMaterial{SceneColor{0.1f, 0.1f, 0.1f, 1.f}, SceneColor{1.f, 1.f, 1.f, 1.f}}};
         glm::mat4 projectileCTM =  glm::translate(glm::mat4(1.f), spawnPosition);
         projectileCTM = glm::scale(projectileCTM, glm::vec3(0.2f));  // Scaling factor (make it smaller)
 
-        RenderShapeData projectileData(projectilePrimitive, projectileCTM);
+        RenderShapeData projectileData{projectilePrimitive, projectileCTM};
 
         // Add projectile to the scene
         scene()->addObject(std::make_unique<ProjectileObject>(

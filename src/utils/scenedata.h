@@ -71,11 +71,6 @@ struct SceneLightData {
     float angle;    // Only applicable to spot lights, in RADIANS
 
     float width, height; // No longer supported (area lights)
-    SceneLightData(int id, LightType type, const glm::vec4& color, const glm::vec3& function,
-                   const glm::vec4& pos, const glm::vec4& dir, float penumbra, float angle,
-                   float width, float height)
-        : id(id), type(type), color(color), function(function), pos(pos), dir(dir),
-          penumbra(penumbra), angle(angle), width(width), height(height) {}
 };
 
 // Struct which contains data for the camera of a scene
@@ -145,17 +140,6 @@ struct SceneMaterial {
         cEmissive = glm::vec4(0);
         bumpMap.clear();
     }
-
-
-    // Default constructor
-    SceneMaterial()
-        : cAmbient(glm::vec4(0)), cDiffuse(glm::vec4(0)), cSpecular(glm::vec4(0)), shininess(0),
-          cReflective(glm::vec4(0)), cTransparent(glm::vec4(0)), ior(1.0f), blend(0), cEmissive(glm::vec4(0)) {}
-
-    // Parameterized constructor
-    SceneMaterial(const SceneColor& ambient, const SceneColor& diffuse)
-        : cAmbient(ambient), cDiffuse(diffuse), cSpecular(glm::vec4(0)), shininess(0),
-          cReflective(glm::vec4(0)), cTransparent(glm::vec4(0)), ior(1.0f), blend(0), cEmissive(glm::vec4(0)) {}
 };
 
 // Struct which contains data for a single primitive in a scene
@@ -163,13 +147,6 @@ struct ScenePrimitive {
     PrimitiveType type;
     SceneMaterial material;
     std::string meshfile; // Used for triangle meshes
-
-    // Default constructor
-    ScenePrimitive()
-        : type(PrimitiveType::PRIMITIVE_CUBE), material(SceneMaterial()), meshfile("") {}
-
-    ScenePrimitive(PrimitiveType primitiveType, const SceneMaterial& mat)
-        : type(primitiveType), material(mat) {}
 };
 
 // Struct which contains data for a transformation.

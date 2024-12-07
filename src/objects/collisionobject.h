@@ -10,9 +10,6 @@ struct CollisionInfo {
     glm::vec3 collisionCorrectionVec;
     /// The object that was collided with
     std::shared_ptr<CollisionObject> object;
-
-    CollisionInfo(const glm::vec3& correctionVec, const std::shared_ptr<CollisionObject>& obj)
-        : collisionCorrectionVec(correctionVec), object(obj) {}
 };
 
 /// "Abstract" class representing an object that is collidable

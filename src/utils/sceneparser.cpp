@@ -33,7 +33,7 @@ void traverseSceneGraph(SceneNode* node,
 
     // add the shapes and the current CTM to the shapes vector
     for (ScenePrimitive* primitive: node->primitives) {
-        shapes.emplace_back(*primitive, CTM);
+        shapes.push_back({*primitive, CTM});
     }
 
     // apply the transformation to the lights and add them to the lights vector
@@ -52,7 +52,7 @@ void traverseSceneGraph(SceneNode* node,
                 dir = CTM * glm::vec4(light->dir);
                 break;
         }
-        lights.emplace_back(light->id, light->type, light->color, light->function, pos, dir, light->penumbra, light->angle, light->width, light->height);
+        lights.push_back({light->id, light->type, light->color, light->function, pos, dir, light->penumbra, light->angle, light->width, light->height});
     }
 
     // recur on all children
