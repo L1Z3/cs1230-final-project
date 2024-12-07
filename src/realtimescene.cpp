@@ -123,6 +123,9 @@ void RealtimeScene::paintObjects() {
     glUseProgram(0);
 }
 
+
+
+
 void RealtimeScene::passUniformMat4(const char* name, const glm::mat4& mat) {
     helpers::passUniformMat4(m_phongShader.value(), name, mat);
 }

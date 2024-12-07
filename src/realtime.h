@@ -42,6 +42,10 @@ private:
     void makeFBO();
     void paintScreenTexture(GLuint texture, bool enableInvert, bool enableBoxBlur) const;
     void initializeFullscreenQuad();
+
+    void initializeCrosshair();
+    /// Paints the crosshair
+    void paintCrosshair();
     GLuint m_defaultFBO;
     int m_fbo_width;
     int m_fbo_height;
@@ -50,6 +54,9 @@ private:
     GLuint m_fbo;
     GLuint m_fbo_texture;
     GLuint m_fbo_renderbuffer;
+
+    GLuint m_crosshair_vao;
+    GLuint m_crosshair_vbo;
 
     bool isInited() const;
     void tryInitScene();
@@ -61,5 +68,6 @@ private:
     int m_param2;
     GLuint m_phongShader;
     GLuint m_filterShader;
+    GLuint m_crosshairShader;
     bool m_queuedBufferUpdate = false;
 };

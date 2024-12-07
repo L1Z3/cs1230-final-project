@@ -98,7 +98,7 @@ void Realtime::initializeGL() {
 
     m_phongShader = ShaderLoader::createShaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
     m_filterShader = ShaderLoader::createShaderProgram("resources/shaders/filter.vert", "resources/shaders/filter.frag");
-
+    m_crosshairShader = ShaderLoader::createShaderProgram("resources/shaders/crosshair.vert", "resources/shaders/crosshair.frag");
     // set uniform texture loc for the filter shader TODO is this needed?
     glUseProgram(m_filterShader);
     glUniform1i(glGetUniformLocation(m_filterShader, "texture"), 0);
@@ -109,6 +109,7 @@ void Realtime::initializeGL() {
         mesh->updateBuffers();
     }
 
+    initializeCrosshair();
     initializeFullscreenQuad();
     makeFBO();
 }
@@ -144,6 +145,34 @@ void Realtime::initializeFullscreenQuad() {
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 
     // Unbind the fullscreen quad's VBO and VAO
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+}
+
+void Realtime::initializeCrosshair()
+{
+    // Define crosshair lines in NDC
+    std::vector<GLfloat> crosshair_data = {
+        // Horizontal line
+        -0.05f, 0.0f, 0.0f,  // Start of horizontal line
+         0.05f, 0.0f, 0.0f,  // End of horizontal line
+        // Vertical line
+         0.0f, -0.08f, 0.0f, // Start of vertical line
+         0.0f,  0.08f, 0.0f  // End of vertical line
+    };
+
+    // Generate and bind a VBO and a VAO for the crosshair
+    glGenBuffers(1, &m_crosshair_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, m_crosshair_vbo);
+    glBufferData(GL_ARRAY_BUFFER, crosshair_data.size() * sizeof(GLfloat), crosshair_data.data(), GL_STATIC_DRAW);
+
+    glGenVertexArrays(1, &m_crosshair_vao);
+    glBindVertexArray(m_crosshair_vao);
+
+    // Set vertex attributes
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), nullptr);
+
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
@@ -200,6 +229,8 @@ void Realtime::paintGL() {
 
     // paintObjects sets and resets the program
     m_scene->paintObjects();
+    //paintaCrosshair sets and resets the program
+    paintCrosshair();
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_defaultFBO);
 
@@ -225,6 +256,21 @@ void Realtime::paintScreenTexture(GLuint texture, bool enableInvert, bool enable
     glBindVertexArray(0);
     glUseProgram(0);
 }
+
+void Realtime::paintCrosshair()
+{
+    // Render the crosshair
+    glUseProgram(m_crosshairShader);
+    glBindVertexArray(m_crosshair_vao);
+
+    // Crosshair doesn't need a model, view, or projection matrix
+    glDrawArrays(GL_LINES, 0, 4);
+
+    glBindVertexArray(0);
+    glUseProgram(0);
+
+}
+
 
 
 void Realtime::resizeGL(int w, int h) {

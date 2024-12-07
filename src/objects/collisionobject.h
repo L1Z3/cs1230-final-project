@@ -25,7 +25,7 @@ public:
     std::optional<CollisionInfo> getCollisionInfo(const glm::vec3& targetTranslation) const;
     // getters
     const AABB& aabb() const;
-protected:
+// protected:w
     CollisionObject(const RenderShapeData& data, const std::shared_ptr<RealtimeScene>& scene);
 private:
     AABB m_aabb;

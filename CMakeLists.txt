@@ -75,6 +75,8 @@ add_executable(${PROJECT_NAME}
     src/objects/projectileobject.h
     src/utils/helpers.h
     src/utils/helpers.cpp
+        src/objects/NCprojectileobject.cpp
+        src/objects/NCprojectileobject.h
 
 )
 
