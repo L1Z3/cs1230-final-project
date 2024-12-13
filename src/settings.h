@@ -10,6 +10,7 @@ struct Settings {
     float farPlane = 1;
     bool perPixelFilter = false;
     bool kernelBasedFilter = false;
+    bool fogEnabled=true;
 };
 
 

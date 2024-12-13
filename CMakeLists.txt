@@ -89,6 +89,8 @@ add_executable(${PROJECT_NAME}
         src/meshes/skymesh.h
         src/objects/skyboxobject.h
         src/objects/skyboxobject.cpp
+        resources/shaders/fog.frag
+        resources/shaders/fog.vert
 
 
 )

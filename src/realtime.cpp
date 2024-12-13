@@ -61,6 +61,7 @@ void Realtime::finish() {
     glDeleteTextures(1, &m_fbo_texture);
     glDeleteRenderbuffers(1, &m_fbo_renderbuffer);
     glDeleteFramebuffers(1, &m_fbo);
+    glDeleteProgram(m_fogShader);
 
     mainWindow.doneCurrent();
 }
@@ -104,7 +105,11 @@ void Realtime::initializeGL() {
     m_phongShader = ShaderLoader::createShaderProgram("resources/shaders/default.vert", "resources/shaders/default.frag");
     m_filterShader = ShaderLoader::createShaderProgram("resources/shaders/filter.vert", "resources/shaders/filter.frag");
     m_crosshairShader = ShaderLoader::createShaderProgram("resources/shaders/crosshair.vert", "resources/shaders/crosshair.frag");
-    // m_crosshairShader = ShaderLoader::createShaderProgram("resources/shaders/skybox.vert", "resources/shaders/skybox.frag");
+    m_fogShader = ShaderLoader::createShaderProgram("resources/shaders/fog.vert", "resources/shaders/fog.frag");
+
+    glUseProgram(m_fogShader);
+    glUniform1i(glGetUniformLocation(m_fogShader, "scene"), 0); // Bind the scene texture to texture unit 0
+    glUseProgram(0);
 
     // set uniform texture loc for the filter shader TODO is this needed?
     glUseProgram(m_filterShader);
@@ -231,6 +236,7 @@ void Realtime::paintGL() {
     // the scene every frame--it's cheap
     if (!m_scene->shaderInitialized()) {
         m_scene->initShader(m_phongShader);
+        // m_scene->initShader(m_fogShader);
     }
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
@@ -241,7 +247,7 @@ void Realtime::paintGL() {
     // paintObjects sets and resets the program
     m_scene->paintObjects();
     //paintaCrosshair sets and resets the program
-    paintCrosshair();
+
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_defaultFBO);
 
@@ -261,6 +267,33 @@ void Realtime::paintGL() {
     }
 
     paintScreenTexture(m_fbo_texture, settings.perPixelFilter, settings.kernelBasedFilter, m_damage_filter, distortion_factor);
+    // Render the fog effect
+    glUseProgram(m_fogShader);
+
+    glm::vec3 fogColor = glm::vec3(0.4f, 0.4f, 0.5f); // Light grayish-blue fog
+    float fogStart = 0.001f;
+    float fogEnd = 3.0f;
+
+    helpers::passUniformVec3(m_fogShader, "fogColor", fogColor);
+    helpers::passUniformFloat(m_fogShader, "fogStart", fogStart);
+    helpers::passUniformFloat(m_fogShader, "fogEnd", fogEnd);
+    // helpers::passUniformFloat(m_fogShader, "nearPlane", settings.nearPlane);
+    // helpers::passUniformFloat(m_fogShader, "farPlane", settings.farPlane);
+
+    // Bind the rendered scene texture
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_fbo_texture);
+    glUniform1i(glGetUniformLocation(m_fogShader, "scene"), 0);
+
+    // Render a fullscreen quad
+    glBindVertexArray(m_fullscreen_vao);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+
+    glUseProgram(0);
+
+    // Render the crosshair
+    paintCrosshair();
 }
 
 void Realtime::paintScreenTexture(GLuint texture, bool enableInvert, bool enableBoxBlur, bool enableDamageFilter, float distortion_factor) const {
@@ -383,6 +416,11 @@ void Realtime::timerEvent(double elapsedSeconds) {
         settings.kernelBasedFilter = !settings.kernelBasedFilter;
         m_keyMap[GLFW_KEY_B] = false;
     }
+    if (m_keyMap[GLFW_KEY_L]) {
+        settings.fogEnabled = !settings.fogEnabled;
+        m_keyMap[GLFW_KEY_L] = false;
+    }
+
 
 
     // call scene tick

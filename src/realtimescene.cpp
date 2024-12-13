@@ -137,8 +137,8 @@ std::shared_ptr<RealtimeScene> RealtimeScene::init(int width, int height, const 
 
   
     // Generate and add the procedural city to the scene
-    int cityRows = 3;   // Number of rows for the city grid
-    int cityCols = 3;   // Number of columns for the city grid
+    int cityRows = 1;   // Number of rows for the city grid
+    int cityCols = 1;   // Number of columns for the city grid
     float citySpacing = 5.0f; // Spacing between buildings
     std::cout<<"init"<<std::endl;
     if (RealtimeScene::m_activeGrids.find({0,0}) == m_activeGrids.end())
@@ -239,7 +239,7 @@ void RealtimeScene::tick(double elapsedSeconds) {
 
     // Add elapsed time to the accumulator
 
-    updateDynamicCity(m_camera->pos(), 100.0f);
+    updateDynamicCity(m_camera->pos(), 6.0f);
 
 
 }
@@ -696,8 +696,8 @@ void RealtimeScene::updateDynamicCity(const glm::vec3& playerPosition, float upd
     printActiveGrids(m_activeGrids);
 
     float spacing = 5.f;
-    int rows = 3;
-    int cols = 3;
+    int rows = 1;
+    int cols = 1;
 
     // Determine which grid the player is in
     int playerGridX = static_cast<int>(playerPosition.x / (cols * spacing));
@@ -737,10 +737,11 @@ void RealtimeScene::updateDynamicCity(const glm::vec3& playerPosition, float upd
         float dist = glm::distance(playerPosition, glm::vec3(gridCenterX, 0, gridCenterZ));
 
         // Deactivate the grid if it is too far
-        if (dist > updateRadius * 2) {
+        if (dist > updateRadius*2) {
+            std::cout << "Deactivated grid: (" << gridX << ", " << gridZ << ", dist: " << dist << ", updateRadius: " << updateRadius << ")\n";
             removeGridObjects(gridX, gridZ, rows, cols);
             it = m_activeGrids.erase(it);
-            std::cout << "Deactivated grid: (" << gridX << ", " << gridZ << ", dist: " << dist << ", updateRadius: " << updateRadius << ")\n";
+
         } else {
             ++it;
         }

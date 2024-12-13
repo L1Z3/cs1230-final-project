@@ -73,6 +73,7 @@ private:
     GLuint m_filterShader;
     GLuint m_crosshairShader;
     GLuint m_skyboxShader;
+    GLuint m_fogShader;
     bool m_queuedBufferUpdate = false;
 
     std::shared_ptr<bool> m_taken_damage = std::make_shared<bool>(false);

@@ -146,6 +146,7 @@ void PlayerObject::tick(double elapsedSeconds) {
             m_lights->at(0).color = SceneColor{0.f, 0.f, 0.f, 1.f};
         }
     }
+
 }
 
 void PlayerObject::spawnBullet() {
